@@ -1,0 +1,310 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#062b49">
+  <title>Disney World | Nuestra cuenta regresiva</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap');
+
+    :root {
+      --navy: #062b49;
+      --blue: #087ea4;
+      --blue-light: #e6f4f7;
+      --coral: #e56b4f;
+      --gold: #f3c969;
+      --ink: #173042;
+      --muted: #5d7380;
+      --paper: #fffdf8;
+      --line: #dce7e5;
+      --shadow: 0 18px 50px rgba(6, 43, 73, .11);
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: #f6f3eb;
+      font-family: 'DM Sans', sans-serif;
+      line-height: 1.5;
+    }
+    button, input, textarea { font: inherit; }
+    button { cursor: pointer; }
+    .hero {
+      min-height: 560px;
+      color: white;
+      background:
+        linear-gradient(90deg, rgba(3, 28, 49, .9) 0%, rgba(3, 28, 49, .63) 43%, rgba(3, 28, 49, .15) 100%);
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      background: var(--hero-image) center 46% / cover;
+      opacity: 1;
+      transition: opacity .9s ease-in-out;
+    }
+    .hero-image-next {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      background: var(--hero-next-image) center 46% / cover;
+      opacity: 0;
+      transition: opacity .9s ease-in-out;
+    }
+    .hero.is-changing::before { opacity: 0; }
+    .hero.is-changing .hero-image-next { opacity: 1; }
+    nav, .hero-content { z-index: 3; }
+    .hero-content { position: relative; }
+    nav { position: relative; }
+    .hero::after {
+      content: '';
+      position: absolute;
+      left: -5%; right: -5%; bottom: -70px;
+      height: 130px;
+      background: #f6f3eb;
+      border-radius: 50% 50% 0 0;
+      z-index: 2;
+    }
+    nav, .hero-content, main { width: min(1160px, calc(100% - 40px)); margin: auto; }
+    nav { padding-top: 28px; display: flex; justify-content: space-between; align-items: center; }
+    .brand { display: flex; align-items: center; gap: 11px; font-weight: 700; letter-spacing: .02em; }
+    .brand-mark { width: 36px; height: 36px; border: 2px solid var(--gold); border-radius: 50%; display: grid; place-items: center; color: var(--gold); font-size: 18px; }
+    .nav-date { color: #d4e5eb; font-size: .85rem; }
+    .hero-content { padding: 106px 0 130px; max-width: 1160px; }
+    .eyebrow { text-transform: uppercase; letter-spacing: .17em; font-size: .72rem; font-weight: 700; color: var(--gold); }
+    h1, h2 { font-family: 'Playfair Display', Georgia, serif; margin: 0; }
+    h1 { max-width: 650px; font-size: clamp(2.7rem, 6vw, 5rem); line-height: 1.02; margin: 16px 0 20px; }
+    .hero-copy { max-width: 470px; color: #e9f4f3; font-size: 1.05rem; }
+    .countdown { display: flex; gap: 12px; margin-top: 35px; flex-wrap: wrap; }
+    .time-box { min-width: 92px; padding: 15px 16px 13px; background: rgba(255,255,255,.13); border: 1px solid rgba(255,255,255,.3); backdrop-filter: blur(8px); border-radius: 4px; text-align: center; }
+    .time-box strong { display: block; font-size: 2rem; line-height: 1; color: white; }
+    .time-box span { color: #d1e9eb; font-size: .69rem; text-transform: uppercase; letter-spacing: .1em; }
+    main { margin-top: -35px; position: relative; z-index: 2; padding-bottom: 70px; }
+    .summary { display: grid; grid-template-columns: repeat(3, 1fr); background: var(--paper); border: 1px solid var(--line); box-shadow: var(--shadow); }
+    .summary-item { padding: 22px 25px; border-right: 1px solid var(--line); }
+    .summary-item:last-child { border: 0; }
+    .summary-label { color: var(--muted); font-size: .76rem; text-transform: uppercase; letter-spacing: .1em; }
+    .summary-value { display: block; margin-top: 5px; font-size: 1.55rem; font-weight: 700; color: var(--navy); }
+    .section-heading { display: flex; justify-content: space-between; align-items: end; margin: 70px 0 22px; gap: 20px; }
+    .section-heading h2 { font-size: 2.25rem; color: var(--navy); }
+    .section-heading p { margin: 0; color: var(--muted); max-width: 430px; font-size: .92rem; }
+    .people-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; }
+    .person-card { background: var(--paper); border: 1px solid var(--line); border-top: 4px solid var(--blue); padding: 20px 17px; box-shadow: 0 8px 24px rgba(6,43,73,.05); }
+    .person-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 17px; }
+    .avatar { width: 41px; height: 41px; display: grid; place-items: center; border-radius: 50%; background: var(--blue-light); color: var(--blue); font-weight: 700; }
+    .person-number { font-size: .72rem; color: var(--muted); }
+    label { display: block; margin: 12px 0 6px; color: var(--muted); font-size: .75rem; font-weight: 600; }
+    input, textarea { width: 100%; border: 1px solid var(--line); border-radius: 3px; background: white; color: var(--ink); padding: 9px 10px; outline: none; }
+    input:focus, textarea:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(8,126,164,.12); }
+    .bottom-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; margin-top: 55px; }
+    .panel { background: var(--paper); border: 1px solid var(--line); padding: 27px; }
+    .panel h3 { margin: 0 0 17px; font-family: 'Playfair Display', Georgia, serif; color: var(--navy); font-size: 1.55rem; }
+    .check-list { display: grid; gap: 12px; }
+    .check-row { display: flex; align-items: center; gap: 10px; color: var(--ink); }
+    .check-row input { width: 17px; height: 17px; accent-color: var(--coral); }
+    .save-note { margin-top: 20px; padding: 12px; background: #fff4df; color: #765a20; font-size: .8rem; }
+    footer { text-align: center; color: var(--muted); font-size: .78rem; padding: 25px; }
+    @media (max-width: 900px) { .people-grid { grid-template-columns: repeat(3, 1fr); } }
+    @media (max-width: 640px) {
+      nav, .hero-content, main { width: calc(100% - 32px); }
+      .hero { min-height: 590px; }
+      nav { padding-top: 18px; }
+      .brand { font-size: .86rem; gap: 8px; }
+      .brand-mark { width: 31px; height: 31px; font-size: 15px; }
+      .hero-content { padding: 72px 0 105px; }
+      h1 { font-size: clamp(2.4rem, 13vw, 3.6rem); margin-top: 12px; }
+      .hero-copy { font-size: .94rem; }
+      .countdown { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin-top: 27px; max-width: 280px; }
+      .time-box { min-width: 0; padding: 12px 8px 10px; }
+      .time-box strong { font-size: 1.7rem; }
+      main { margin-top: -28px; }
+      .nav-date { display: none; }
+      .summary { grid-template-columns: 1fr; }
+      .summary-item { padding: 17px 18px; border-right: 0; border-bottom: 1px solid var(--line); }
+      .summary-item:last-child { border-bottom: 0; }
+      .summary-value { font-size: 1.3rem; }
+      .section-heading { margin: 48px 0 18px; }
+      .section-heading h2 { font-size: 2rem; }
+      .people-grid, .bottom-grid { grid-template-columns: 1fr; }
+      .person-card { padding: 18px; }
+      input, textarea { padding: 11px 10px; font-size: 16px; }
+      .section-heading { display: block; }
+      .section-heading p { margin-top: 9px; }
+      .bottom-grid { gap: 14px; margin-top: 40px; }
+      .panel { padding: 20px 18px; }
+      .check-row { align-items: flex-start; line-height: 1.35; }
+      .check-row input { flex: 0 0 auto; margin-top: 2px; }
+      footer { padding: 22px 16px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="hero">
+    <div class="hero-image-next" aria-hidden="true"></div>
+    <nav>
+      <div class="brand"><span class="brand-mark">✦</span><span>Walt Disney World · 2029</span></div>
+      <div class="nav-date">Plan familiar · Orlando, Florida</div>
+    </nav>
+    <div class="hero-content">
+      <div class="eyebrow">La magia empieza antes de llegar</div>
+      <h1>Nuestra aventura está a la vista.</h1>
+      <p class="hero-copy">Un espacio para organizar el viaje, cuidar el presupuesto y guardar las pequeñas decisiones que hacen grande la experiencia.</p>
+      <div class="countdown" aria-label="Cuenta regresiva">
+        <div class="time-box"><strong id="days">--</strong><span>días</span></div>
+        <div class="time-box"><strong id="hours">--</strong><span>horas</span></div>
+        <div class="time-box"><strong id="minutes">--</strong><span>minutos</span></div>
+        <div class="time-box"><strong id="seconds">--</strong><span>segundos</span></div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="summary" aria-label="Resumen del viaje">
+      <div class="summary-item"><span class="summary-label">Fecha tentativa</span><strong class="summary-value">15 ene 2029</strong></div>
+      <div class="summary-item"><span class="summary-label">Presupuesto del grupo</span><strong class="summary-value" id="total-budget">$0</strong></div>
+      <div class="summary-item"><span class="summary-label">Días de parque</span><strong class="summary-value" id="total-days">0 días</strong></div>
+    </section>
+
+    <section>
+      <div class="section-heading">
+        <div><div class="eyebrow" style="color: var(--coral)">El equipo de expedición</div><h2>¿Quién viene?</h2></div>
+        <p>Completa el presupuesto, los días de parque y una nota útil para cada persona. Los datos se guardan automáticamente en este dispositivo.</p>
+      </div>
+      <div class="people-grid" id="people-grid"></div>
+    </section>
+
+    <section class="bottom-grid">
+      <div class="panel">
+        <h3>Primeras decisiones</h3>
+        <div class="check-list">
+          <label class="check-row"><input type="checkbox" data-key="hotel"> Elegir hotel y fechas de reserva</label>
+          <label class="check-row"><input type="checkbox" data-key="tickets"> Comparar entradas y opciones Park Hopper</label>
+          <label class="check-row"><input type="checkbox" data-key="reservas"> Preparar reservas de restaurantes</label>
+          <label class="check-row"><input type="checkbox" data-key="transporte"> Definir traslados y equipaje</label>
+        </div>
+        <div class="save-note">Tus cambios se guardan localmente en el navegador. No se envía información a ningún servidor.</div>
+      </div>
+      <div class="panel">
+        <h3>Notas de la familia</h3>
+        <label for="notes">Ideas, reservas pendientes o momentos que no se pueden olvidar</label>
+        <textarea id="notes" rows="7" placeholder="Escribe aquí..."></textarea>
+      </div>
+    </section>
+  </main>
+  <footer>Planificador familiar inspirado en la experiencia de Walt Disney World Resort · Fecha editable en el código: 15/01/2029</footer>
+
+  <script>
+    const tripDate = new Date('2029-01-15T00:00:00');
+    const heroImages = [
+      '2022-07-28 - Epcot - World Showcase Entrance (8-2).jpeg',
+      '2022-07-29 - Disneys Hollywood Studios - Millennium Falcon (9).jpeg',
+      '2025-01-28 - Magic Kingdom Park - Plaza garden west (1).jpeg',
+      '2025-01-29 - Epcot - World celebration epcot (20).jpeg',
+      '20250128_121142.jpg',
+      '20250128_221626.jpg',
+      '20250128_221819.jpg',
+      '20250129_211939.jpg'
+    ];
+    const imageUrl = filename => encodeURI(filename);
+    const heroImagesReady = heroImages.map(filename => new Promise(resolve => {
+      const image = new Image();
+      image.onload = async () => {
+        try {
+          await image.decode();
+        } catch (error) {
+          // Algunos navegadores no exponen decode() para archivos locales.
+        }
+        resolve();
+      };
+      image.onerror = resolve;
+      image.src = imageUrl(filename);
+    }));
+    let currentHeroImage = 0;
+    const defaultPeople = [
+      { name: 'Persona 1', budget: 0, parkDays: 0, note: '' },
+      { name: 'Persona 2', budget: 0, parkDays: 0, note: '' },
+      { name: 'Persona 3', budget: 0, parkDays: 0, note: '' },
+      { name: 'Persona 4', budget: 0, parkDays: 0, note: '' },
+      { name: 'Persona 5', budget: 0, parkDays: 0, note: '' }
+    ];
+    const storedPeople = JSON.parse(localStorage.getItem('disney-people') || 'null');
+    const people = storedPeople || defaultPeople;
+
+    function setHeroImage() {
+      const hero = document.querySelector('.hero');
+      const currentImagePath = imageUrl(heroImages[currentHeroImage]);
+      const nextImagePath = imageUrl(heroImages[(currentHeroImage + 1) % heroImages.length]);
+      hero.style.setProperty('--hero-image', `url('${currentImagePath}')`);
+      hero.style.setProperty('--hero-next-image', `url('${nextImagePath}')`);
+    }
+    async function rotateHeroImage() {
+      const hero = document.querySelector('.hero');
+      currentHeroImage = (currentHeroImage + 1) % heroImages.length;
+      await heroImagesReady[currentHeroImage];
+      const nextImagePath = imageUrl(heroImages[currentHeroImage]);
+      hero.style.setProperty('--hero-next-image', `url('${nextImagePath}')`);
+      hero.classList.add('is-changing');
+      setTimeout(() => {
+        hero.style.setProperty('--hero-image', `url('${nextImagePath}')`);
+        hero.classList.remove('is-changing');
+      }, 900);
+    }
+
+    function formatMoney(value) {
+      return new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(value || 0);
+    }
+    function renderPeople() {
+      document.getElementById('people-grid').innerHTML = people.map((person, index) => `
+        <article class="person-card">
+          <div class="person-top"><div class="avatar">${index + 1}</div><span class="person-number">Viajero ${index + 1}</span></div>
+          <label for="name-${index}">Nombre</label>
+          <input id="name-${index}" data-index="${index}" data-field="name" value="${person.name}" aria-label="Nombre del viajero ${index + 1}">
+          <label for="budget-${index}">Presupuesto (USD)</label>
+          <input id="budget-${index}" data-index="${index}" data-field="budget" type="number" min="0" step="50" value="${person.budget}" aria-label="Presupuesto del viajero ${index + 1}">
+          <label for="park-${index}">Días de parque</label>
+          <input id="park-${index}" data-index="${index}" data-field="parkDays" type="number" min="0" max="30" value="${person.parkDays}" aria-label="Días de parque del viajero ${index + 1}">
+          <label for="note-${index}">Nota</label>
+          <input id="note-${index}" data-index="${index}" data-field="note" value="${person.note}" placeholder="Ej. alergias">
+        </article>`).join('');
+      document.querySelectorAll('[data-field]').forEach(input => input.addEventListener('input', updatePerson));
+    }
+    function updatePerson(event) {
+      const input = event.target;
+      const index = Number(input.dataset.index);
+      const field = input.dataset.field;
+      people[index][field] = field === 'budget' || field === 'parkDays' ? Number(input.value) : input.value;
+      localStorage.setItem('disney-people', JSON.stringify(people));
+      updateTotals();
+    }
+    function updateTotals() {
+      document.getElementById('total-budget').textContent = formatMoney(people.reduce((sum, person) => sum + (Number(person.budget) || 0), 0));
+      document.getElementById('total-days').textContent = `${people.reduce((sum, person) => sum + (Number(person.parkDays) || 0), 0)} días`;
+    }
+    function updateCountdown() {
+      const remaining = Math.max(0, tripDate - new Date());
+      const totalSeconds = Math.floor(remaining / 1000);
+      document.getElementById('days').textContent = Math.floor(totalSeconds / 86400);
+      document.getElementById('hours').textContent = String(Math.floor(totalSeconds % 86400 / 3600)).padStart(2, '0');
+      document.getElementById('minutes').textContent = String(Math.floor(totalSeconds % 3600 / 60)).padStart(2, '0');
+      document.getElementById('seconds').textContent = String(totalSeconds % 60).padStart(2, '0');
+    }
+    renderPeople();
+    updateTotals();
+    updateCountdown();
+    setHeroImage();
+    setInterval(rotateHeroImage, 10000);
+    setInterval(updateCountdown, 1000);
+    document.getElementById('notes').value = localStorage.getItem('disney-notes') || '';
+    document.getElementById('notes').addEventListener('input', event => localStorage.setItem('disney-notes', event.target.value));
+    document.querySelectorAll('[data-key]').forEach(box => {
+      box.checked = localStorage.getItem(`disney-${box.dataset.key}`) === 'true';
+      box.addEventListener('change', event => localStorage.setItem(`disney-${box.dataset.key}`, event.target.checked));
+    });
+  </script>
+</body>
+</html>
